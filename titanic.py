@@ -1,8 +1,11 @@
+
 import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder, StandardScaler, MinMaxScaler
+import os
+
 
 df = pd.read_csv("Titanic-Dataset.csv")
 
@@ -17,18 +20,16 @@ print(df.isnull().sum())
 
 df['Age'].fillna(df['Age'].median(), inplace=True)
 
-
 df['Embarked'].fillna(df['Embarked'].mode()[0], inplace=True)
+
 
 df.drop(columns=['Cabin'], inplace=True)
 
-
 le = LabelEncoder()
-df['Sex'] = le.fit_transform(df['Sex'])  
+df['Sex'] = le.fit_transform(df['Sex']) 
 
 
 df = pd.get_dummies(df, columns=['Embarked'], drop_first=True)
-
 
 scaler = StandardScaler()
 df[['Age', 'Fare']] = scaler.fit_transform(df[['Age', 'Fare']])
@@ -49,4 +50,10 @@ def remove_outliers_iqr(df, column):
     return df[(df[column] >= lower_bound) & (df[column] <= upper_bound)]
 
 df = remove_outliers_iqr(df, 'Fare')
-print("\nData cleaning and preprocessing completed successfully.")
+
+
+save_path = r"C:/Users/Vishnu Prahalathan/Desktop/SCREENSHOTS/titanic_cleaned.csv"
+df.to_csv(save_path, index=False)
+
+print(f"\nCleaned dataset saved as '{save_path}'")
+print("Data cleaning and preprocessing completed successfully.")
